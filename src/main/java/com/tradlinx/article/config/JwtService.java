@@ -5,6 +5,7 @@ import com.tradlinx.article.model.entity.Member;
 import com.tradlinx.article.model.properties.JwtProperties;
 import com.tradlinx.article.service.member.MemberService;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,7 +44,7 @@ public class JwtService {
                 .compact();
     }
 
-    public String parseJwt(HttpServletRequest request) {
+    public String resolveJwt(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
@@ -51,17 +52,21 @@ public class JwtService {
         return null;
     }
 
-    private String parse(String jwt) {
-        JwtParser jwtParser = Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build();
+    private String parseJwt(String jwt) {
+        try {
+            JwtParser jwtParser = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build();
 
-        return jwtParser.parseClaimsJws(jwt).getBody().getSubject();
+            return jwtParser.parseClaimsJws(jwt).getBody().getSubject();
+        } catch (ExpiredJwtException e) {
+            throw new UnAuthorizedException("jwt 파싱 중 에러 발생", e);
+        }
     }
 
     public boolean validateToken(String jwt) {
         try {
-            parse(jwt);
+            parseJwt(jwt);
 
             return true;
         } catch (ExpiredJwtException e){
@@ -72,14 +77,14 @@ public class JwtService {
     }
 
     public Authentication getAuthentication(String jwt) {
-        String userid = parse(jwt);
+        String userid = parseJwt(jwt);
         Member member = memberService.getMember(userid);
         return new UsernamePasswordAuthenticationToken(member, jwt);
     }
 
     public Member getMember(HttpServletRequest request) {
-        String jwt = parseJwt(request);
-        String userid = parse(jwt);
+        String jwt = resolveJwt(request);
+        String userid = parseJwt(jwt);
         return memberService.getMember(userid);
     }
 

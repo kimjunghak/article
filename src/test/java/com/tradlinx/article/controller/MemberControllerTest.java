@@ -2,6 +2,7 @@ package com.tradlinx.article.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradlinx.article.model.entity.Member;
+import com.tradlinx.article.model.result.RestResult;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,9 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -44,11 +44,14 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(member))
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(member.getUsername())))
                 .andReturn()
                 .getResponse()
                 .getContentAsString(StandardCharsets.UTF_8);
 
-        System.out.println("responseBody = " + responseBody);
+        RestResult restResult = objectMapper.readValue(responseBody, RestResult.class);
+        Object data = restResult.getData();
+        System.out.println("data = " + data);
+
+        assertEquals(member.getUsername(), data.toString());
     }
 }

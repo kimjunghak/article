@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:~/tradelinx
+    url: jdbc:h2:~/tradlinx
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -14,6 +14,8 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: create
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
 
 jwt:
   secret-key: ece44c4d67f49a928e9db1ad2d51367173eb2fce48092b8d81f51e9e00f97f06517a3b2002b2cfb72f5d29334269ce05498c85214da2b38e6708f8799323e21d
