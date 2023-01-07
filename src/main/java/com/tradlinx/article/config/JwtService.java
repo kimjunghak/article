@@ -1,8 +1,9 @@
 package com.tradlinx.article.config;
 
 import com.tradlinx.article.exception.UnAuthorizedException;
-import com.tradlinx.article.model.entity.User;
-import com.tradlinx.article.service.user.UserService;
+import com.tradlinx.article.model.entity.Member;
+import com.tradlinx.article.model.properties.JwtProperties;
+import com.tradlinx.article.service.member.MemberService;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +25,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class JwtService {
 
-    private final UserService userService;
+    private final JwtProperties jwtProperties;
+
+    private final MemberService memberService;
 
     public String generateToken(String userid) {
-        long expireTime = 2 * 24 * 60 * 1000L;
+        long expireTime = jwtProperties.getExpireTime();
         Claims claims = Jwts.claims().setSubject(userid);
         Date expire = Date.from(LocalDateTime.now().plusSeconds(expireTime).atZone(ZoneId.systemDefault()).toInstant());
 
@@ -41,17 +44,11 @@ public class JwtService {
     }
 
     public String parseJwt(HttpServletRequest request) {
-        String jwt = null;
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            jwt = bearerToken.substring(7);
+            return bearerToken.substring(7);
         }
-
-        if (jwt == null) {
-            throw new UnAuthorizedException("허용되지 않은 접근입니다.");
-        }
-
-        return parse(jwt);
+        return null;
     }
 
     private String parse(String jwt) {
@@ -59,7 +56,7 @@ public class JwtService {
                 .setSigningKey(getSigningKey())
                 .build();
 
-        return jwtParser.parseClaimsJwt(jwt).getBody().getSubject();
+        return jwtParser.parseClaimsJws(jwt).getBody().getSubject();
     }
 
     public boolean validateToken(String jwt) {
@@ -74,23 +71,20 @@ public class JwtService {
         }
     }
 
-    public Authentication jwtAuthentication(String jwt) {
+    public Authentication getAuthentication(String jwt) {
         String userid = parse(jwt);
-        User user = getUser(userid);
-        return new UsernamePasswordAuthenticationToken(user, jwt);
+        Member member = memberService.getUser(userid);
+        return new UsernamePasswordAuthenticationToken(member, jwt);
     }
 
-    public User getUser(String subject) {
-        return userService.getUser(subject);
+    public Member getMember(HttpServletRequest request) {
+        String jwt = parseJwt(request);
+        String userid = parse(jwt);
+        return memberService.getUser(userid);
     }
 
     private Key getSigningKey() {
-        String secretKey = "tradLinx";
-        byte[] secretKeyBytes = DatatypeConverter.parseBase64Binary(secretKey);
+        byte[] secretKeyBytes = DatatypeConverter.parseBase64Binary(jwtProperties.getSecretKey());
         return new SecretKeySpec(secretKeyBytes, SignatureAlgorithm.HS256.getJcaName());
-    }
-
-    public Authentication getAuthentication(String jwt) {
-        return null;
     }
 }

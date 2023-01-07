@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:h2:~/tradelinx
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+
+jwt:
+  secret-key: ece44c4d67f49a928e9db1ad2d51367173eb2fce48092b8d81f51e9e00f97f06517a3b2002b2cfb72f5d29334269ce05498c85214da2b38e6708f8799323e21d
+  expire-time: 288000
