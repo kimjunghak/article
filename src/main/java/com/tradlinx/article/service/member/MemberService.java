@@ -1,6 +1,6 @@
 package com.tradlinx.article.service.member;
 
-import com.tradlinx.article.model.dto.MemberFront;
+import com.tradlinx.article.model.front.MemberFront;
 import com.tradlinx.article.model.entity.Member;
 import com.tradlinx.article.model.mapper.MemberMapper;
 import com.tradlinx.article.repository.MemberRepository;
@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -21,17 +23,21 @@ public class MemberService implements UserDetailsService {
     private final MemberMapper mapper;
     private final MemberRepository memberRepository;
 
-    public Member getUser(String userid) {
-        return memberRepository.findByUserid(userid).orElseThrow(() -> new NoSuchElementException("존재하지 않는 이용자입니다."));
+    public Member getMember(String userId) {
+        return memberRepository.findByUserid(userId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 이용자입니다."));
     }
 
-    public Member getUserByUsername(String username) {
+    public Member getMemberByUsername(String username) {
         return memberRepository.findByUsername(username).orElseThrow(() -> new NoSuchElementException("존재하지 않는 이용자입니다."));
+    }
+
+    public Member findByMemberId(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 이용자입니다."));
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return getUserByUsername(username);
+        return getMemberByUsername(username);
     }
 
     public void save(Member member) {
@@ -44,5 +50,9 @@ public class MemberService implements UserDetailsService {
 
     public MemberFront toMemberFront(Member member) {
         return mapper.fromMember(member);
+    }
+
+    public void saveAll(List<Member> members) {
+        memberRepository.saveAll(members);
     }
 }

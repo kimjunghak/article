@@ -2,7 +2,7 @@ package com.tradlinx.article.service.member;
 
 import com.tradlinx.article.config.JwtService;
 import com.tradlinx.article.exception.UnAuthorizedException;
-import com.tradlinx.article.model.dto.MemberFront;
+import com.tradlinx.article.model.front.MemberFront;
 import com.tradlinx.article.model.entity.Member;
 import com.tradlinx.article.model.param.MemberParam;
 import com.tradlinx.article.model.result.RestResult;
@@ -43,7 +43,7 @@ public class MemberApiService {
 
 
     public RestResult signin(MemberParam param) {
-        Member member = memberService.getUser(param.getUserid());
+        Member member = memberService.getMember(param.getUserid());
 
         String rawPassword = param.getPw();
         String userPassword = member.getPassword();

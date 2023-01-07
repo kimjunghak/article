@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.NoSuchElementException;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -16,6 +18,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public RestResult unAuthorizedException(UnAuthorizedException e) {
         log.error("[ UnAuthorizedException ] 발생 !! {}", e.getMessage(), e);
+        return RestResult.fail(e.getMessage());
+    }
+
+    @ExceptionHandler({NoSuchElementException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public RestResult noSuchElementException(NoSuchElementException e) {
+        log.error("[ NoSuchElementException ] 발생 !! {}", e.getMessage(), e);
         return RestResult.fail(e.getMessage());
     }
 

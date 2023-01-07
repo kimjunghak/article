@@ -9,8 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,7 +26,7 @@ public class Member implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    private Long memberId;
 
     private String userid;
 
@@ -46,12 +48,20 @@ public class Member implements UserDetails {
 
     private LocalDateTime lastLoggedAt;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Article> articleList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Comments> commentsList = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         HashSet<GrantedAuthority> set = new HashSet<>();
-        if (this.role.equalsIgnoreCase("admin")) {
+        if (this.role != null && this.role.equalsIgnoreCase("admin")) {
             set.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        } else if (this.role.equalsIgnoreCase("user")) {
+        } else {
             set.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
         return set;

@@ -73,14 +73,14 @@ public class JwtService {
 
     public Authentication getAuthentication(String jwt) {
         String userid = parse(jwt);
-        Member member = memberService.getUser(userid);
+        Member member = memberService.getMember(userid);
         return new UsernamePasswordAuthenticationToken(member, jwt);
     }
 
     public Member getMember(HttpServletRequest request) {
         String jwt = parseJwt(request);
         String userid = parse(jwt);
-        return memberService.getUser(userid);
+        return memberService.getMember(userid);
     }
 
     private Key getSigningKey() {

@@ -1,4 +1,4 @@
-package com.tradlinx.article.model.dto;
+package com.tradlinx.article.model.front;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
