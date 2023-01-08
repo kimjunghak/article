@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -31,7 +32,12 @@ public class CommentsApiService {
         Article article = articleService.getArticle(articleId);
         Comments comments = commentsService.upsertComments(param, article, member);
         articleService.save(comments.getArticle());
-        memberService.save(comments.getMember());
+
+        // 원글 작성자 포인트 1 지급
+        Member articleOwnMember = comments.getArticle().getMember();
+        articleOwnMember.setPoint(articleOwnMember.getPoint() + 1);
+        memberService.saveAll(List.of(member, articleOwnMember));
+
         return RestResult.success(comments.getCommentsId());
     }
 

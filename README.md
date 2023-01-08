@@ -1,5 +1,6 @@
-### Spring UTF-8 설정
+### Spring 기초 설정
     -Dfile.encoding=UTF-8
+    -Duser.timezone="Asia/Seoul"
 
 ### DDL
 
@@ -8,14 +9,14 @@
 ```sql
 CREATE TABLE Member
 (
-    member_id      BIGINT NOT NULL,
+    member_id      BIGINT NOT NULL AUTO_INCREMENT,
     userid         VARCHAR(255),
     username       VARCHAR(255),
     pw             VARCHAR(255),
     point          INT    NOT NULL,
     role           VARCHAR(255),
-    created_at     TIMESTAMP,
-    updated_at     TIMESTAMP,
+    created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     last_logged_at TIMESTAMP,
     CONSTRAINT pk_member PRIMARY KEY (member_id)
 );
@@ -25,12 +26,12 @@ CREATE TABLE Member
 ```sql
 CREATE TABLE Article
 (
-article_id       BIGINT NOT NULL,
+article_id       BIGINT NOT NULL AUTO_INCREMENT,
 article_title    VARCHAR(255),
 article_contents VARCHAR(255),
 view_count       INT    NOT NULL,
-created_at       TIMESTAMP,
-updated_at       TIMESTAMP,
+created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+updated_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 member_id        BIGINT,
 CONSTRAINT pk_article PRIMARY KEY (article_id)
 );
@@ -43,12 +44,12 @@ ADD CONSTRAINT FK_ARTICLE_ON_MEMBERID FOREIGN KEY (member_id) REFERENCES Member 
 ```sql
 CREATE TABLE Comments
 (
-    comments_id       BIGINT NOT NULL,
+    comments_id       BIGINT NOT NULL AUTO_INCREMENT,
     comments_contents VARCHAR(255),
-    created_at        TIMESTAMP,
-    updated_at        TIMESTAMP,
     member_id         BIGINT,
     article_id        BIGINT,
+    created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT pk_comments PRIMARY KEY (comments_id)
 );
 

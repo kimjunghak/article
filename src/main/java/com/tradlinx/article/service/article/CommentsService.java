@@ -34,10 +34,6 @@ public class CommentsService {
         member.setPoint(member.getPoint() + 2);
         comments.setMember(member);
 
-        // 원글 작성자 포인트 1 지급
-        Member articleOwnMember = comments.getArticle().getMember();
-        articleOwnMember.setPoint(articleOwnMember.getPoint() + 1);
-
         return save(comments);
     }
 
