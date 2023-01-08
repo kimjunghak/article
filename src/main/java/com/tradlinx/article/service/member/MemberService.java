@@ -1,7 +1,7 @@
 package com.tradlinx.article.service.member;
 
-import com.tradlinx.article.model.front.MemberFront;
 import com.tradlinx.article.model.entity.Member;
+import com.tradlinx.article.model.front.MemberFront;
 import com.tradlinx.article.model.mapper.MemberMapper;
 import com.tradlinx.article.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 

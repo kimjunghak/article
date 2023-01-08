@@ -50,6 +50,6 @@ public class CommentsApiService {
         memberService.saveAll(new ArrayList<>(Arrays.asList(member, articleOwnMember)));
 
         commentsService.deleteComments(comments);
-        return null;
+        return RestResult.success(commentsId);
     }
 }
