@@ -48,11 +48,11 @@ public class Member implements UserDetails {
 
     private LocalDateTime lastLoggedAt;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member")
     @ToString.Exclude
     private List<Article> articleList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member")
     @ToString.Exclude
     private List<Comments> commentsList = new ArrayList<>();
 

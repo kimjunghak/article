@@ -40,7 +40,7 @@ public class Article {
     @ToString.Exclude
     private Member member;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
     @ToString.Exclude
     private List<Comments> commentsList = new ArrayList<>();
 }
